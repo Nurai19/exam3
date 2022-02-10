@@ -1,45 +1,43 @@
 import csv
-from io import TextIOWrapper
 
 
 class CsvManager:
 
-    # def __int__(self, action: str):
-    #     self.file = open('data.csv')
-
-    def manage_file(self, action: str) -> TextIOWrapper:
-        return open('data.csv', action)
+    def __init__(self, data):
+        self.data = data
 
     def sort_field(self):
         pass
 
-    def add_field(self, data: str):
-        file = self.manage_file('a')
-        writer = csv.writer(file)
+    def adding_field(self):
+        with open('dict.csv', 'a', newline='') as f:
+            writer = csv.writer(f, delimiter=';')
+            writer.writerow((self.data['first_name'], self.data['last_name'], self.data['age'], self.data['gender'],
+                             self.data['hobby'], self.data['job']))
+            f.close()
 
-        for row in data:
-            writer.writerow(row)
+    def update_field(self):
 
-        file.close()
+        row_num = 1
+        new_value = 'Replaced Line'
 
-    def update_field(self, target: str, new_value: str):
-        data_list = list(csv.reader(self.manage_file('r')))
+        with open('dict.csv', 'r') as f:
+            csv_reader = csv.reader(f, delimiter=';')
+            lines = []
 
-        for el in data_list:
-            if target in el:
-                indx = el.index(target)
-                el[indx] = new_value
+            for current_line in csv_reader:
+                if csv_reader.line_num == row_num:
+                    current_line = new_value
+                lines.append(current_line)
 
-        writer = csv.writer(self.manage_file('w'))
-        writer.writerow(data_list)
+        with open('dict.csv', 'w', newline='') as f:
+            writer = csv.writer(f, delimiter=';')
+            writer.writerows(lines)
 
     def edit_field(self):
-        pass
-
-    def find_data(target: str):
-        pass
-
-
-manager = CsvManager
-# manager.add_field('name', 'age')
-manager.update_field('name', 'surname')
+        line_to_editing = []
+        with open('dict.csv') as f:
+            csv_reader = csv.reader(f, delimiter=';')
+            for row in csv_reader:
+                line_to_editing.append(row)
+        print(line_to_editing)
